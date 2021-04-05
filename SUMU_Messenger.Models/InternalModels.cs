@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 namespace SUMU_Messenger.Models
 {
     class InternalModels
-    { }
+    {
+    }
     public struct IdentityValidation
     {
         public int TypeId { get; set; }
