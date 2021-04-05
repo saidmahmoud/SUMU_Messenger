@@ -43,7 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AuthorizationRepository,cs.cs" />
+    <Compile Include="AuthorizationRepository.cs" />
     <Compile Include="DataClassesManager.cs" />
     <Compile Include="DataClasses.designer.cs">
       <AutoGen>True</AutoGen>
