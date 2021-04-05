@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="Spark_db" Class="DataClassesDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=(localdb)\v11.0;Initial Catalog=Spark_db;Integrated Security=True" SettingsObjectName="SUMU_Messenger.DataAccess.Properties.Settings" SettingsPropertyName="Spark_dbConnectionString" Provider="System.Data.SqlClient" />
+  <Function Name="dbo.DoRegistration" Method="DoRegistration">
+    <Parameter Name="Username" Parameter="username" Type="System.String" DbType="NVarChar(20)" />
+    <Parameter Name="Password" Parameter="password" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" />
+    <Parameter Name="PasswordSalt" Parameter="passwordSalt" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" />
+    <Parameter Name="CountryId" Parameter="countryId" Type="System.String" DbType="NVarChar(2)" />
+    <Parameter Name="identitiesXML" Type="System.Xml.Linq.XElement" DbType="Xml" />
+    <Parameter Name="preUserId" Type="System.Int64" DbType="BigInt" Direction="InOut" />
+    <Parameter Name="Error" Parameter="error" Type="System.String" DbType="NVarChar(255)" Direction="InOut" />
+    <Parameter Name="redirect" Type="System.String" DbType="NVarChar(100)" Direction="InOut" />
+    <ElementType Name="DoRegistrationResult">
+      <Column Name="TypeId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="[Identity]" Member="Identity" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="Token" Type="System.String" DbType="NVarChar(128)" CanBeNull="true" />
+      <Column Name="Validation" Type="System.String" DbType="NVarChar(1024)" CanBeNull="true" />
+      <Column Name="Immediate" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="Template" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.InsertLog" Method="InsertLog">
+    <Parameter Name="userId" Type="System.String" DbType="NVarChar(128)" />
+    <Parameter Name="message" Type="System.String" DbType="NVarChar(MAX)" />
+    <Parameter Name="category" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="level" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="request" Type="System.String" DbType="NVarChar(MAX)" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.GetPendingChat" Method="GetPendingChat">
+    <Parameter Name="userId" Type="System.Int64" DbType="BigInt" />
+    <ElementType Name="GetPendingChatResult">
+      <Column Name="[Group]" Member="Group" Type="System.String" DbType="NVarChar(128)" CanBeNull="true" />
+      <Column Name="Sender" Type="System.String" DbType="NVarChar(128) NOT NULL" CanBeNull="false" />
+      <Column Name="Id" Type="System.String" DbType="NVarChar(128) NOT NULL" CanBeNull="false" />
+      <Column Name="Type" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Content" Type="System.String" DbType="NVarChar(2048)" CanBeNull="true" />
+      <Column Name="SizeInBytes" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="IssuedAt" Type="System.DateTimeOffset" DbType="DateTimeOffset NOT NULL" CanBeNull="false" />
+      <Column Name="ExpiresAt" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Duration" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IsScrambled" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.DoValidation" Method="DoValidation">
+    <Parameter Name="Token" Parameter="token" Type="System.String" DbType="NVarChar(128)" />
+    <Parameter Name="Code" Parameter="code" Type="System.String" DbType="NVarChar(128)" />
+    <Parameter Name="userId" Type="System.Int64" DbType="BigInt" Direction="InOut" />
+    <Parameter Name="user_id" Type="System.String" DbType="NVarChar(128)" Direction="InOut" />
+    <Parameter Name="error" Type="System.String" DbType="NVarChar(255)" Direction="InOut" />
+    <Parameter Name="redirect" Type="System.String" DbType="NVarChar(MAX)" Direction="InOut" />
+    <ElementType Name="DoValidationResult">
+      <Column Name="Id" Type="System.String" DbType="NVarChar(128)" CanBeNull="true" />
+      <Column Name="TypeId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Recipients" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.DoValidationRequest" Method="DoValidationRequest">
+    <Parameter Name="IdentityType" Parameter="identityType" Type="System.Int32" DbType="Int" />
+    <Parameter Name="preUserId" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="Identity" Parameter="identity" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="error" Type="System.String" DbType="NVarChar(255)" Direction="InOut" />
+    <Parameter Name="redirect" Type="System.String" DbType="NVarChar(100)" Direction="InOut" />
+    <ElementType Name="DoValidationRequestResult">
+      <Column Name="TypeId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="[Identity]" Member="Identity" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="Token" Type="System.String" DbType="NVarChar(128)" CanBeNull="true" />
+      <Column Name="Validation" Type="System.String" DbType="NVarChar(1024)" CanBeNull="true" />
+      <Column Name="Immediate" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="Template" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.preAuthorizationTokenGeneration" Method="preAuthorizationTokenGeneration">
+    <Parameter Name="Username" Parameter="username" Type="System.String" DbType="NVarChar(20)" />
+    <Parameter Name="Id" Parameter="id" Type="System.String" DbType="NVarChar(128)" Direction="InOut" />
+    <Parameter Name="UserId" Parameter="userId" Type="System.Int64" DbType="BigInt" Direction="InOut" />
+    <Parameter Name="Password" Parameter="password" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" Direction="InOut" />
+    <Parameter Name="Salt" Parameter="salt" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" Direction="InOut" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.GetUserById" Method="GetUserById">
+    <Parameter Name="Id" Parameter="id" Type="System.String" DbType="NVarChar(100)" />
+    <ElementType Name="GetUserByIdResult">
+      <Column Name="Id" Type="System.String" DbType="NVarChar(128) NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Username" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="CountryId" Type="System.String" DbType="NChar(2) NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedAt" Type="System.DateTimeOffset" DbType="DateTimeOffset" CanBeNull="true" />
+      <Column Name="IdentityTypeId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="[Identity]" Member="Identity" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+    </ElementType>
+  </Function>
+</Database>
