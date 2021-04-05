@@ -8,6 +8,7 @@ namespace SUMU_Messenger.Models
 {
     class InternalModels
     {
+
     }
     public struct IdentityValidation
     {
