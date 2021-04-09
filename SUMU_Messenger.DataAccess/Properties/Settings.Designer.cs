@@ -32,5 +32,16 @@ namespace SUMU_Messenger.DataAccess.Properties {
                 return ((string)(this["Spark_dbConnectionString"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=sumu_messengerdb;Integrated Se" +
+            "curity=True")]
+        public string sumu_messengerdbConnectionString {
+            get {
+                return ((string)(this["sumu_messengerdbConnectionString"]));
+            }
+        }
     }
 }

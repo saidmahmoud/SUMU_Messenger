@@ -20,8 +20,8 @@ namespace SUMU_Messenger.WebApi
         {
             StringBuilder builder = new StringBuilder();
             builder.AppendLine("");
-            builder.AppendLine(string.Format("[Category:]", category));
-            builder.AppendLine(string.Format("[UserId:]", userId));
+            builder.AppendLine(string.Format("[Category:{0}]", category));
+            builder.AppendLine(string.Format("[UserId:{0}]", userId));
             builder.AppendLine(header.Replace("\r\n", ""));
             builder.AppendLine(request);
             builder.AppendLine(message);

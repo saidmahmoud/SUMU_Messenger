@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Xml.Linq;
@@ -20,6 +21,13 @@ namespace SUMU_Messenger.WebApi
                 return null;
             return new XElement("Identities", identities.Select(i => new XElement("Identity", new XElement[] { new XElement("TypeId", i.TypeId), new XElement("Value", i.Value) })));
 
+        }
+        internal static bool ExactMatch(string input, string match)
+        {
+            if (input.StartsWith("0"))
+                input = input.Substring(1, input.Length - 1);
+            var result = Regex.Match(input, string.Format(@"^{0}$", match));
+            return result.Success && result.Value == input;
         }
         internal static Task ValidateIdentity(IdentityValidation validation, string transactionType = "Validation")
         {

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,12 +21,13 @@ namespace SUMU_Messenger.WebApi
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
-            //config.Formatters.JsonFormatter.SerializerSettings =
-            // new JsonSerializerSettings
-            // {
-            //     NullValueHandling = NullValueHandling.Ignore/*,
-            //                 ContractResolver = new CamelCasePropertyNamesContractResolver()*/
-            // };
+
+            config.Formatters.JsonFormatter.SerializerSettings =
+             new JsonSerializerSettings
+             {
+                 NullValueHandling = NullValueHandling.Ignore
+                 //, ContractResolver = new CamelCasePropertyNamesContractResolver()
+             };
         }
     }
 }

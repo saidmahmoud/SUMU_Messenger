@@ -183,12 +183,14 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="ChatHub.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\CountryController.cs" />
     <Compile Include="Controllers\IdentityController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helper\AuthorizationProvider.cs" />
     <Compile Include="Helper\AuthorizationUtils.cs" />
     <Compile Include="Helper\IdentityUtils.cs" />
     <Compile Include="Helper\SessionUtils.cs" />

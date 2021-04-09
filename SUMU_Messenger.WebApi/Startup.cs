@@ -1,5 +1,7 @@
 ﻿using Microsoft.Owin;
+using Microsoft.Owin.Security.OAuth;
 using Owin;
+using SUMU_Messenger.WebApi.Helper;
 using System;
 using System.Threading.Tasks;
 
@@ -11,8 +13,42 @@ namespace SUMU_Messenger.WebApi
     {
         public void Configuration(IAppBuilder app)
         {
+            ConfigureOAuth(app);
             app.MapSignalR();
-            // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=316888
+            
+        }
+        public void ConfigureOAuth(IAppBuilder app)
+        {
+            OAuthAuthorizationServerOptions OAuthServerOptions = new OAuthAuthorizationServerOptions()
+            {
+                AllowInsecureHttp = true,
+                TokenEndpointPath = new PathString("/token"),
+                AccessTokenExpireTimeSpan = TimeSpan.FromSeconds(TokenExpiry_Seconds),
+                Provider = new AuthorizationProvider()
+            };
+
+            // Token Generation
+            app.UseOAuthAuthorizationServer(OAuthServerOptions);
+            app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions());
+
+        }
+
+        private static int tokenExpiry_Seconds;
+        private static int TokenExpiry_Seconds
+        {
+            get
+            {
+
+                if (tokenExpiry_Seconds == 0)
+                {
+                    if (!int.TryParse(System.Configuration.ConfigurationManager.AppSettings["TokenExpiry_Seconds"], out tokenExpiry_Seconds))
+                        tokenExpiry_Seconds = 86400;
+                }
+                return tokenExpiry_Seconds;
+            }
+
         }
     }
 }
+
+

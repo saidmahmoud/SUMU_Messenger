@@ -170,5 +170,50 @@ namespace SUMU_Messenger.DataAccess
 
             }
         }
+        public static string GetRegExpByCountry(string id)
+        {
+            var regExp = string.Empty;
+            using (var dc = new DataClassesDataContext(ConnectionString))
+            {
+                regExp = (from x in dc.Countries
+                          where x.Id == id
+                          select x.PhoneRegExp).SingleOrDefault();
+                return regExp;
+            }
+        }
+        public static List<UserDTO> GetUsers(string userId, int offset, int limit, out string error)
+        {
+            error = string.Empty;
+            try
+            {
+                using (var dc = new DataClassesDataContext(ConnectionString))
+                {
+                    var data = (from x in dc.GetUsers(offset, limit)
+                                group x by new { x.Id, x.Name, x.Username, x.CreatedAt, x.CountryId } into y
+                                select new UserDTO
+                                {
+                                    Id = y.Key.Id,
+                                    CountryId = y.Key.CountryId,
+                                    Username = y.Key.Username,
+                                    Name = y.Key.Name,
+                                    RegisteredAt = y.Key.CreatedAt,
+                                    Identity = (from z in y
+                                                select new IdentityDTO
+                                                {
+                                                    TypeId = z.IdentityTypeId,
+                                                    Value = z.Identity
+                                                }).ToList()
+                                }
+                                ).ToList();
+                    return data;
+                }
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+                return new List<UserDTO> { };
+            }
+        }
+
     }
 }

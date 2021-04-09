@@ -1,5 +1,14 @@
-﻿<?xml version="1.0" encoding="utf-8"?><Database Name="Spark_db" Class="DataClassesDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Connection Mode="AppSettings" ConnectionString="Data Source=(localdb)\v11.0;Initial Catalog=Spark_db;Integrated Security=True" SettingsObjectName="SUMU_Messenger.DataAccess.Properties.Settings" SettingsPropertyName="Spark_dbConnectionString" Provider="System.Data.SqlClient" />
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="sumu_messengerdb" Class="DataClassesDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=sumu_messengerdb;Integrated Security=True" SettingsObjectName="SUMU_Messenger.DataAccess.Properties.Settings" SettingsPropertyName="sumu_messengerdbConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.Country" Member="Countries">
+    <Type Name="Country">
+      <Column Name="Id" Type="System.String" DbType="NChar(2) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Code" Type="System.String" DbType="VarChar(5) NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(40) NOT NULL" CanBeNull="false" />
+      <Column Name="BanSMSInvitation" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="PhoneRegExp" Type="System.String" DbType="NVarChar(300)" CanBeNull="true" />
+    </Type>
+  </Table>
   <Function Name="dbo.DoRegistration" Method="DoRegistration">
     <Parameter Name="Username" Parameter="username" Type="System.String" DbType="NVarChar(20)" />
     <Parameter Name="Password" Parameter="password" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" />
@@ -80,6 +89,19 @@
   <Function Name="dbo.GetUserById" Method="GetUserById">
     <Parameter Name="Id" Parameter="id" Type="System.String" DbType="NVarChar(100)" />
     <ElementType Name="GetUserByIdResult">
+      <Column Name="Id" Type="System.String" DbType="NVarChar(128) NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Username" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="CountryId" Type="System.String" DbType="NChar(2) NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedAt" Type="System.DateTimeOffset" DbType="DateTimeOffset" CanBeNull="true" />
+      <Column Name="IdentityTypeId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="[Identity]" Member="Identity" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.GetUsers" Method="GetUsers">
+    <Parameter Name="offset" Type="System.Int32" DbType="Int" />
+    <Parameter Name="limit" Type="System.Int32" DbType="Int" />
+    <ElementType Name="GetUsersResult">
       <Column Name="Id" Type="System.String" DbType="NVarChar(128) NOT NULL" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
       <Column Name="Username" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" />

@@ -12,5 +12,6 @@ namespace SUMU_Messenger.WebApi
         {
             Clients.All.Broadcast(message);
         }
+
     }
 }

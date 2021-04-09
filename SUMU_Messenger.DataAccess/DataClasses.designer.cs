@@ -22,7 +22,7 @@ namespace SUMU_Messenger.DataAccess
 	using System;
 	
 	
-	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="Spark_db")]
+	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="sumu_messengerdb")]
 	public partial class DataClassesDataContext : System.Data.Linq.DataContext
 	{
 		
@@ -30,10 +30,13 @@ namespace SUMU_Messenger.DataAccess
 		
     #region Extensibility Method Definitions
     partial void OnCreated();
+    partial void InsertCountry(Country instance);
+    partial void UpdateCountry(Country instance);
+    partial void DeleteCountry(Country instance);
     #endregion
 		
 		public DataClassesDataContext() : 
-				base(global::SUMU_Messenger.DataAccess.Properties.Settings.Default.Spark_dbConnectionString, mappingSource)
+				base(global::SUMU_Messenger.DataAccess.Properties.Settings.Default.sumu_messengerdbConnectionString, mappingSource)
 		{
 			OnCreated();
 		}
@@ -60,6 +63,14 @@ namespace SUMU_Messenger.DataAccess
 				base(connection, mappingSource)
 		{
 			OnCreated();
+		}
+		
+		public System.Data.Linq.Table<Country> Countries
+		{
+			get
+			{
+				return this.GetTable<Country>();
+			}
 		}
 		
 		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.DoRegistration")]
@@ -122,6 +133,171 @@ namespace SUMU_Messenger.DataAccess
 		{
 			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), id);
 			return ((ISingleResult<GetUserByIdResult>)(result.ReturnValue));
+		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.GetUsers")]
+		public ISingleResult<GetUsersResult> GetUsers([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> offset, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> limit)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), offset, limit);
+			return ((ISingleResult<GetUsersResult>)(result.ReturnValue));
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Country")]
+	public partial class Country : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private string _Id;
+		
+		private string _Code;
+		
+		private string _Name;
+		
+		private System.Nullable<bool> _BanSMSInvitation;
+		
+		private string _PhoneRegExp;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(string value);
+    partial void OnIdChanged();
+    partial void OnCodeChanging(string value);
+    partial void OnCodeChanged();
+    partial void OnNameChanging(string value);
+    partial void OnNameChanged();
+    partial void OnBanSMSInvitationChanging(System.Nullable<bool> value);
+    partial void OnBanSMSInvitationChanged();
+    partial void OnPhoneRegExpChanging(string value);
+    partial void OnPhoneRegExpChanged();
+    #endregion
+		
+		public Country()
+		{
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="NChar(2) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
+		public string Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Code", DbType="VarChar(5) NOT NULL", CanBeNull=false)]
+		public string Code
+		{
+			get
+			{
+				return this._Code;
+			}
+			set
+			{
+				if ((this._Code != value))
+				{
+					this.OnCodeChanging(value);
+					this.SendPropertyChanging();
+					this._Code = value;
+					this.SendPropertyChanged("Code");
+					this.OnCodeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(40) NOT NULL", CanBeNull=false)]
+		public string Name
+		{
+			get
+			{
+				return this._Name;
+			}
+			set
+			{
+				if ((this._Name != value))
+				{
+					this.OnNameChanging(value);
+					this.SendPropertyChanging();
+					this._Name = value;
+					this.SendPropertyChanged("Name");
+					this.OnNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_BanSMSInvitation", DbType="Bit")]
+		public System.Nullable<bool> BanSMSInvitation
+		{
+			get
+			{
+				return this._BanSMSInvitation;
+			}
+			set
+			{
+				if ((this._BanSMSInvitation != value))
+				{
+					this.OnBanSMSInvitationChanging(value);
+					this.SendPropertyChanging();
+					this._BanSMSInvitation = value;
+					this.SendPropertyChanged("BanSMSInvitation");
+					this.OnBanSMSInvitationChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PhoneRegExp", DbType="NVarChar(300)")]
+		public string PhoneRegExp
+		{
+			get
+			{
+				return this._PhoneRegExp;
+			}
+			set
+			{
+				if ((this._PhoneRegExp != value))
+				{
+					this.OnPhoneRegExpChanging(value);
+					this.SendPropertyChanging();
+					this._PhoneRegExp = value;
+					this.SendPropertyChanged("PhoneRegExp");
+					this.OnPhoneRegExpChanged();
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
 		}
 	}
 	
@@ -625,6 +801,140 @@ namespace SUMU_Messenger.DataAccess
 		private string _Identity;
 		
 		public GetUserByIdResult()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="NVarChar(128) NOT NULL", CanBeNull=false)]
+		public string Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this._Id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(50)")]
+		public string Name
+		{
+			get
+			{
+				return this._Name;
+			}
+			set
+			{
+				if ((this._Name != value))
+				{
+					this._Name = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Username", DbType="NVarChar(20) NOT NULL", CanBeNull=false)]
+		public string Username
+		{
+			get
+			{
+				return this._Username;
+			}
+			set
+			{
+				if ((this._Username != value))
+				{
+					this._Username = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CountryId", DbType="NChar(2) NOT NULL", CanBeNull=false)]
+		public string CountryId
+		{
+			get
+			{
+				return this._CountryId;
+			}
+			set
+			{
+				if ((this._CountryId != value))
+				{
+					this._CountryId = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedAt", DbType="DateTimeOffset")]
+		public System.Nullable<System.DateTimeOffset> CreatedAt
+		{
+			get
+			{
+				return this._CreatedAt;
+			}
+			set
+			{
+				if ((this._CreatedAt != value))
+				{
+					this._CreatedAt = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IdentityTypeId", DbType="Int NOT NULL")]
+		public int IdentityTypeId
+		{
+			get
+			{
+				return this._IdentityTypeId;
+			}
+			set
+			{
+				if ((this._IdentityTypeId != value))
+				{
+					this._IdentityTypeId = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="[Identity]", Storage="_Identity", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string Identity
+		{
+			get
+			{
+				return this._Identity;
+			}
+			set
+			{
+				if ((this._Identity != value))
+				{
+					this._Identity = value;
+				}
+			}
+		}
+	}
+	
+	public partial class GetUsersResult
+	{
+		
+		private string _Id;
+		
+		private string _Name;
+		
+		private string _Username;
+		
+		private string _CountryId;
+		
+		private System.Nullable<System.DateTimeOffset> _CreatedAt;
+		
+		private int _IdentityTypeId;
+		
+		private string _Identity;
+		
+		public GetUsersResult()
 		{
 		}
 		

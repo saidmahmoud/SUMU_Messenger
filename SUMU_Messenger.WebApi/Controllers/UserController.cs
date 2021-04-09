@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
@@ -15,7 +16,7 @@ namespace SUMU_Messenger.WebApi.Controllers
     public class UserController : ApiController
     {
         SessionInfo _SessionInfo = HttpContext.Current.GetSessionInfo();
-        //UserDTO _User = (HttpContext.Current.User as ClaimsPrincipal).ResolveIdentity();
+        UserDTO _User = (HttpContext.Current.User as ClaimsPrincipal).ResolveIdentity();
 
         [AllowAnonymous]
         public async Task<IHttpActionResult> Post(RegistrationDTO item)
@@ -65,11 +66,11 @@ namespace SUMU_Messenger.WebApi.Controllers
         );
         }
 
-        //[Authorize]
+        [Authorize]
         public async Task<IHttpActionResult> Get(string id)
         {
             var error = string.Empty;
-            LogManager.WriteLog("info", "", this.Request.RequestUri.PathAndQuery, JsonConvert.SerializeObject(_SessionInfo)).Forget();
+            LogManager.WriteLog("info", _User.Username, this.Request.RequestUri.PathAndQuery, JsonConvert.SerializeObject(_SessionInfo)).Forget();
             var user = DataClassesManager.GetUser(id, out error);
 
             if (!string.IsNullOrEmpty(error))
@@ -77,7 +78,23 @@ namespace SUMU_Messenger.WebApi.Controllers
                 LogManager.WriteLog("error", "", this.Request.RequestUri.PathAndQuery, error).Forget();
                 return BadRequest();
             }
+
             return Ok(user);
+        }
+        [Authorize]
+        public async Task<IHttpActionResult> Get(int offset=0, int limit=100)
+        {
+            var error = string.Empty;
+            LogManager.WriteLog("info", "", this.Request.RequestUri.PathAndQuery, JsonConvert.SerializeObject(_SessionInfo)).Forget();
+            var users = DataClassesManager.GetUsers(_User.Id, offset, limit, out error);
+
+            if (!string.IsNullOrEmpty(error))
+            {
+                LogManager.WriteLog("error", "", this.Request.RequestUri.PathAndQuery, error).Forget();
+                return BadRequest();
+            }
+
+            return Ok(users);
         }
     }
 }
