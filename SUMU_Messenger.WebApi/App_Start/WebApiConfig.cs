@@ -26,7 +26,8 @@ namespace SUMU_Messenger.WebApi
              new JsonSerializerSettings
              {
                  NullValueHandling = NullValueHandling.Ignore
-                 //, ContractResolver = new CamelCasePropertyNamesContractResolver()
+                 ,
+                 ContractResolver = new CamelCasePropertyNamesContractResolver()
              };
         }
     }

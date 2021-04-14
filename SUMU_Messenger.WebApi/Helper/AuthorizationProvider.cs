@@ -48,7 +48,7 @@ namespace SUMU_Messenger.WebApi.Helper
             }
 
             var identity = new ClaimsIdentity(context.Options.AuthenticationType);
-            identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, string.Format("{0}:{1}", id, username)));
+            identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, string.Format("{0}:{1}:{2}", id, username, userId)));
             identity.AddClaim(new Claim(ClaimTypes.Role, "user"));
 
             context.Validated(identity);

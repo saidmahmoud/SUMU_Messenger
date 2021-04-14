@@ -1,10 +1,12 @@
-﻿using SUMU_Messenger.Models;
+﻿
+using SUMU_Messenger.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using static SUMU_Messenger.Models.Base;
 
 namespace SUMU_Messenger.DataAccess
 {
@@ -20,38 +22,38 @@ namespace SUMU_Messenger.DataAccess
             }
         }
 
-        public static UserDTO GetUser(string id, out string error)
+        public static string GetRegExpByCountry(string id)
         {
-            error = string.Empty;
-            try
+            var regExp = string.Empty;
+            using (var dc = new DataClassesDataContext(ConnectionString))
             {
-                using (var dc = new DataClassesDataContext(ConnectionString))
+                regExp = (from x in dc.Countries
+                          where x.Id == id
+                          select x.PhoneRegExp).SingleOrDefault();
+                return regExp;
+            }
+        }
+        public static bool CheckIdentityAvailability(int type, string value)
+        {
+            var available = false;
+            using (var dc = new DataClassesDataContext(ConnectionString))
+            {
+                switch (type)
                 {
-                    var data = (from x in dc.GetUserById(id)
-                                group x by new { x.Id, x.Name, x.Username, x.CreatedAt, x.CountryId } into y
-                                select new UserDTO
-                                {
-                                    Id = y.Key.Id,
-                                    CountryId = y.Key.CountryId,
-                                    Username = y.Key.Username,
-                                    Name = y.Key.Name,
-                                    RegisteredAt = y.Key.CreatedAt,
-                                    Identity = (from z in y
-                                                select new IdentityDTO
-                                                {
-                                                    TypeId = z.IdentityTypeId,
-                                                    Value = z.Identity
-                                                }).ToList()
-                                }
-                                ).SingleOrDefault();
-                    return data;
+                    case (int)IdentityEnum.Username:
+                        available = dc.Users.Where(x => x.Username == value).SingleOrDefault() == null;
+                        break;
+                    case (int)IdentityEnum.Mobile:
+                    case (int)IdentityEnum.Email:
+                        available = (dc.UserIdentities.Where(x => x.Identity == value).SingleOrDefault() == null);
+                        break;
+                    default:
+                        available = false;
+                        break;
                 }
+                return available;
             }
-            catch (Exception ex)
-            {
-                error = ex.Message;
-                return new UserDTO { };
-            }
+
         }
         public static List<IdentityValidation> Register(string username, byte[] password, byte[] salt, string countryId, XElement identitiesXml, out long? preUserId, out string errorMessage)
         {
@@ -156,29 +158,137 @@ namespace SUMU_Messenger.DataAccess
             }
 
         }
-        public static void ControllerLog(string level, string userId, string request, string message, string category = "")
+        public static void SaveNotification(long senderId, string recipientPublicId, ref long? recipientInternalId, string localMessageId, int messageTypeId, string message, string expiresAt, long? fileSizeInBytes, int? duration, bool isScrambled, int delay, out bool? alreadyReceived, out string messageId, out DateTimeOffset? issuedAt, out bool? senderHasPendingNotifications)
         {
+            alreadyReceived = false; messageId = string.Empty; issuedAt = DateTimeOffset.MinValue; senderHasPendingNotifications = false;
+            try
+            {
+                long? _recipientInternalId = recipientInternalId;
+                bool? _alreadyReceived = alreadyReceived;
+                string _messageId = messageId;
+                DateTimeOffset? _issuedAt = issuedAt;
+                bool? _senderHasPendingNotifications = senderHasPendingNotifications;
+
+                using (var dc = new DataClassesDataContext(ConnectionString))
+                {
+                    dc.SaveNotification(senderId, recipientPublicId, ref _recipientInternalId, localMessageId, messageTypeId, message, expiresAt, fileSizeInBytes, duration, isScrambled, delay, ref _alreadyReceived, ref _messageId, ref _issuedAt, ref _senderHasPendingNotifications);
+                }
+
+                recipientInternalId = _recipientInternalId;
+                alreadyReceived = _alreadyReceived;
+                messageId = _messageId;
+                issuedAt = _issuedAt;
+                senderHasPendingNotifications = _senderHasPendingNotifications;
+            }
+            catch (Exception ex)
+            {
+                issuedAt = DateTimeOffset.MinValue;
+            }
+        }
+        public static List<NotificationDTO> GetPendingChat(long userId, out string errorMessage)
+        {
+            errorMessage = string.Empty;
             try
             {
                 using (var dc = new DataClassesDataContext(ConnectionString))
                 {
-                    dc.InsertLog(userId, message, category, level, request);
+                    return (from x in dc.GetPendingChat(userId)
+                            select new NotificationDTO { Id = x.Id, Content = x.Content, Duration = x.Duration, ExpiresAt = x.ExpiresAt, Group = x.Group, IsScrambled = x.IsScrambled, IssuedAt = x.IssuedAt, Sender = x.Sender, SizeInBytes = x.SizeInBytes, Type = x.Type }
+                            ).ToList();
                 }
             }
             catch (Exception ex)
             {
+                errorMessage = ex.Message;
+            }
+            return null;
+        }
+        public static List<Update> NotificationDelivered(long userId, string notificationId)
+        {
+            var updates = new List<Update>();
+            try
+            {
+                using (var dc = new DataClassesDataContext(ConnectionString))
+                {
+                    updates = (from x in dc.NotificationDelivered(userId, notificationId)
+                                select new Update { Recipient_Id = x.User_Id, RecipientId = x.UserId.Value, Id = x.UpdateId, Content = x.Content }).ToList();
+                }
 
             }
-        }
-        public static string GetRegExpByCountry(string id)
-        {
-            var regExp = string.Empty;
-            using (var dc = new DataClassesDataContext(ConnectionString))
+            catch (Exception ex)
             {
-                regExp = (from x in dc.Countries
-                          where x.Id == id
-                          select x.PhoneRegExp).SingleOrDefault();
-                return regExp;
+                return null;
+            }
+            return updates;
+        }
+        public static Update NotificationRead(long userId, string notificationId, bool markAllPrevious)
+        {
+            var update = new Update { };
+            try
+            {
+
+                using (var dc = new DataClassesDataContext(ConnectionString))
+                {
+                    update = (from x in dc.NotificationRead(userId, notificationId, markAllPrevious)
+                                select new Update { Recipient_Id = x.User_Id, RecipientId = x.UserId, Id = x.UpdateId, Content = x.Content }).SingleOrDefault();
+                }
+
+            }
+            catch (Exception ex)
+            {
+            }
+            return update;
+        }
+        public static List<Update> NotificationRecalled(long userId, string ids)
+        {
+            var updates = new List<Update>();
+            try
+            {
+
+                using (var dc = new DataClassesDataContext(ConnectionString))
+                {
+                    var _notificationId = string.Empty;
+                    updates = (from x in dc.NotificationRecalled(userId, ids)
+                                select new Update { Recipient_Id = x.User_Id, RecipientId = x.UserId, Id = x.UpdateId, Content = ids }).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            return updates;
+        }
+        public static UserDTO GetUser(string id, out string error)
+        {
+            error = string.Empty;
+            try
+            {
+                using (var dc = new DataClassesDataContext(ConnectionString))
+                {
+                    var data = (from x in dc.GetUserById(id)
+                                group x by new { x.Id, x.Name, x.Username, x.CreatedAt, x.CountryId } into y
+                                select new UserDTO
+                                {
+                                    Id = y.Key.Id,
+                                    CountryId = y.Key.CountryId,
+                                    Username = y.Key.Username,
+                                    Name = y.Key.Name,
+                                    RegisteredAt = y.Key.CreatedAt,
+                                    Identity = (from z in y
+                                                select new IdentityDTO
+                                                {
+                                                    TypeId = z.IdentityTypeId,
+                                                    Value = z.Identity
+                                                }).ToList()
+                                }
+                                ).SingleOrDefault();
+                    return data;
+                }
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+                return new UserDTO { };
             }
         }
         public static List<UserDTO> GetUsers(string userId, int offset, int limit, out string error)
@@ -214,6 +324,33 @@ namespace SUMU_Messenger.DataAccess
                 return new List<UserDTO> { };
             }
         }
+        public static void ControllerLog(string level, string userId, string request, string message, string category = "")
+        {
+            try
+            {
+                using (var dc = new DataClassesDataContext(ConnectionString))
+                {
+                    dc.InsertLog(userId, message, category, level, request);
+                }
+            }
+            catch (Exception ex)
+            {
 
+            }
+        }
+        public static void InsertLog(string message, string category, string level, string request, string userId = "")
+        {
+            try
+            {
+                using (var dc = new DataClassesDataContext(ConnectionString))
+                {
+                    dc.InsertLog(userId, message, category, level, request);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
     }
 }

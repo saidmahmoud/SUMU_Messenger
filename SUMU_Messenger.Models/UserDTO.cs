@@ -13,6 +13,7 @@ namespace SUMU_Messenger.Models
         public string CountryId { get; set; }        
         public ICollection<IdentityDTO> Identity { get; set; }
         public DateTimeOffset? RegisteredAt {get; set;}
+        public long? UserId { get; set; }
 
     }
 }

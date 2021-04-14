@@ -33,6 +33,12 @@ namespace SUMU_Messenger.DataAccess
     partial void InsertCountry(Country instance);
     partial void UpdateCountry(Country instance);
     partial void DeleteCountry(Country instance);
+    partial void InsertUser(User instance);
+    partial void UpdateUser(User instance);
+    partial void DeleteUser(User instance);
+    partial void InsertUserIdentity(UserIdentity instance);
+    partial void UpdateUserIdentity(UserIdentity instance);
+    partial void DeleteUserIdentity(UserIdentity instance);
     #endregion
 		
 		public DataClassesDataContext() : 
@@ -70,6 +76,22 @@ namespace SUMU_Messenger.DataAccess
 			get
 			{
 				return this.GetTable<Country>();
+			}
+		}
+		
+		public System.Data.Linq.Table<User> Users
+		{
+			get
+			{
+				return this.GetTable<User>();
+			}
+		}
+		
+		public System.Data.Linq.Table<UserIdentity> UserIdentities
+		{
+			get
+			{
+				return this.GetTable<UserIdentity>();
 			}
 		}
 		
@@ -141,6 +163,49 @@ namespace SUMU_Messenger.DataAccess
 			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), offset, limit);
 			return ((ISingleResult<GetUsersResult>)(result.ReturnValue));
 		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.SaveNotification")]
+		public int SaveNotification([global::System.Data.Linq.Mapping.ParameterAttribute(Name="SenderId", DbType="BigInt")] System.Nullable<long> senderId, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(128)")] string recipientPublicId, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RecipientInternalId", DbType="BigInt")] ref System.Nullable<long> recipientInternalId, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="LocalMessageId", DbType="NVarChar(100)")] string localMessageId, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="NotificationTypeId", DbType="Int")] System.Nullable<int> notificationTypeId, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="NotificationContent", DbType="NVarChar(2048)")] string notificationContent, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="ExpiresAt", DbType="NVarChar(50)")] string expiresAt, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="FileSizeInBytes", DbType="BigInt")] System.Nullable<long> fileSizeInBytes, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Duration", DbType="Int")] System.Nullable<int> duration, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsScrambled", DbType="Bit")] System.Nullable<bool> isScrambled, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> delay, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="AlreadyReceived", DbType="Bit")] ref System.Nullable<bool> alreadyReceived, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="NotificationId", DbType="NVarChar(128)")] ref string notificationId, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="IssuedAt", DbType="DateTimeOffset")] ref System.Nullable<System.DateTimeOffset> issuedAt, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="SenderHasPendingNotifications", DbType="Bit")] ref System.Nullable<bool> senderHasPendingNotifications)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), senderId, recipientPublicId, recipientInternalId, localMessageId, notificationTypeId, notificationContent, expiresAt, fileSizeInBytes, duration, isScrambled, delay, alreadyReceived, notificationId, issuedAt, senderHasPendingNotifications);
+			recipientInternalId = ((System.Nullable<long>)(result.GetParameterValue(2)));
+			alreadyReceived = ((System.Nullable<bool>)(result.GetParameterValue(11)));
+			notificationId = ((string)(result.GetParameterValue(12)));
+			issuedAt = ((System.Nullable<System.DateTimeOffset>)(result.GetParameterValue(13)));
+			senderHasPendingNotifications = ((System.Nullable<bool>)(result.GetParameterValue(14)));
+			return ((int)(result.ReturnValue));
+		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.NotificationDelivered")]
+		public ISingleResult<NotificationDeliveredResult> NotificationDelivered([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> userId, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(MAX)")] string notifications)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), userId, notifications);
+			return ((ISingleResult<NotificationDeliveredResult>)(result.ReturnValue));
+		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.NotificationRead")]
+		public ISingleResult<NotificationReadResult> NotificationRead([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> userId, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Id", DbType="NVarChar(128)")] string id, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Bit")] System.Nullable<bool> markAllPrevious)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), userId, id, markAllPrevious);
+			return ((ISingleResult<NotificationReadResult>)(result.ReturnValue));
+		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.NotificationRecalled")]
+		public ISingleResult<NotificationRecalledResult> NotificationRecalled([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> userId, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Ids", DbType="NVarChar(MAX)")] string ids)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), userId, ids);
+			return ((ISingleResult<NotificationRecalledResult>)(result.ReturnValue));
+		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.GenericNotification")]
+		public ISingleResult<GenericNotificationResult> GenericNotification([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> delay, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="SenderId", DbType="BigInt")] System.Nullable<long> senderId, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(MAX)")] string recipient_users, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(MAX)")] string recipient_groups, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="LocalMessageId", DbType="NVarChar(100)")] string localMessageId, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="NotificationTypeId", DbType="Int")] System.Nullable<int> notificationTypeId, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="NotificationContent", DbType="NVarChar(2048)")] string notificationContent, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="ExpiresAt", DbType="NVarChar(50)")] string expiresAt, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="FileSizeInBytes", DbType="BigInt")] System.Nullable<long> fileSizeInBytes, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Duration", DbType="Int")] System.Nullable<int> duration, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsScrambled", DbType="Bit")] System.Nullable<bool> isScrambled, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="IssuedAt", DbType="DateTimeOffset")] ref System.Nullable<System.DateTimeOffset> issuedAt, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="AlreadyReceived", DbType="Bit")] ref System.Nullable<bool> alreadyReceived, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="SenderHasPendingNotifications", DbType="Bit")] ref System.Nullable<bool> senderHasPendingNotifications)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), delay, senderId, recipient_users, recipient_groups, localMessageId, notificationTypeId, notificationContent, expiresAt, fileSizeInBytes, duration, isScrambled, issuedAt, alreadyReceived, senderHasPendingNotifications);
+			issuedAt = ((System.Nullable<System.DateTimeOffset>)(result.GetParameterValue(11)));
+			alreadyReceived = ((System.Nullable<bool>)(result.GetParameterValue(12)));
+			senderHasPendingNotifications = ((System.Nullable<bool>)(result.GetParameterValue(13)));
+			return ((ISingleResult<GenericNotificationResult>)(result.ReturnValue));
+		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Country")]
@@ -158,6 +223,8 @@ namespace SUMU_Messenger.DataAccess
 		private System.Nullable<bool> _BanSMSInvitation;
 		
 		private string _PhoneRegExp;
+		
+		private EntitySet<User> _Users;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -177,6 +244,7 @@ namespace SUMU_Messenger.DataAccess
 		
 		public Country()
 		{
+			this._Users = new EntitySet<User>(new Action<User>(this.attach_Users), new Action<User>(this.detach_Users));
 			OnCreated();
 		}
 		
@@ -276,6 +344,505 @@ namespace SUMU_Messenger.DataAccess
 					this._PhoneRegExp = value;
 					this.SendPropertyChanged("PhoneRegExp");
 					this.OnPhoneRegExpChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Country_User", Storage="_Users", ThisKey="Id", OtherKey="CountryId")]
+		public EntitySet<User> Users
+		{
+			get
+			{
+				return this._Users;
+			}
+			set
+			{
+				this._Users.Assign(value);
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_Users(User entity)
+		{
+			this.SendPropertyChanging();
+			entity.Country = this;
+		}
+		
+		private void detach_Users(User entity)
+		{
+			this.SendPropertyChanging();
+			entity.Country = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Users")]
+	public partial class User : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private string _Id;
+		
+		private long _UserId;
+		
+		private string _Username;
+		
+		private string _Name;
+		
+		private string _CountryId;
+		
+		private System.Data.Linq.Binary _Version;
+		
+		private System.Nullable<System.DateTimeOffset> _CreatedAt;
+		
+		private System.Nullable<System.DateTimeOffset> _UpdatedAt;
+		
+		private bool _Deleted;
+		
+		private EntitySet<UserIdentity> _UserIdentities;
+		
+		private EntityRef<Country> _Country;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(string value);
+    partial void OnIdChanged();
+    partial void OnUserIdChanging(long value);
+    partial void OnUserIdChanged();
+    partial void OnUsernameChanging(string value);
+    partial void OnUsernameChanged();
+    partial void OnNameChanging(string value);
+    partial void OnNameChanged();
+    partial void OnCountryIdChanging(string value);
+    partial void OnCountryIdChanged();
+    partial void OnVersionChanging(System.Data.Linq.Binary value);
+    partial void OnVersionChanged();
+    partial void OnCreatedAtChanging(System.Nullable<System.DateTimeOffset> value);
+    partial void OnCreatedAtChanged();
+    partial void OnUpdatedAtChanging(System.Nullable<System.DateTimeOffset> value);
+    partial void OnUpdatedAtChanged();
+    partial void OnDeletedChanging(bool value);
+    partial void OnDeletedChanged();
+    #endregion
+		
+		public User()
+		{
+			this._UserIdentities = new EntitySet<UserIdentity>(new Action<UserIdentity>(this.attach_UserIdentities), new Action<UserIdentity>(this.detach_UserIdentities));
+			this._Country = default(EntityRef<Country>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="NVarChar(128) NOT NULL", CanBeNull=false, IsPrimaryKey=true, UpdateCheck=UpdateCheck.Never)]
+		public string Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UserId", AutoSync=AutoSync.Always, DbType="BigInt NOT NULL IDENTITY", IsDbGenerated=true, UpdateCheck=UpdateCheck.Never)]
+		public long UserId
+		{
+			get
+			{
+				return this._UserId;
+			}
+			set
+			{
+				if ((this._UserId != value))
+				{
+					this.OnUserIdChanging(value);
+					this.SendPropertyChanging();
+					this._UserId = value;
+					this.SendPropertyChanged("UserId");
+					this.OnUserIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Username", DbType="NVarChar(20) NOT NULL", CanBeNull=false, UpdateCheck=UpdateCheck.Never)]
+		public string Username
+		{
+			get
+			{
+				return this._Username;
+			}
+			set
+			{
+				if ((this._Username != value))
+				{
+					this.OnUsernameChanging(value);
+					this.SendPropertyChanging();
+					this._Username = value;
+					this.SendPropertyChanged("Username");
+					this.OnUsernameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(50)", UpdateCheck=UpdateCheck.Never)]
+		public string Name
+		{
+			get
+			{
+				return this._Name;
+			}
+			set
+			{
+				if ((this._Name != value))
+				{
+					this.OnNameChanging(value);
+					this.SendPropertyChanging();
+					this._Name = value;
+					this.SendPropertyChanged("Name");
+					this.OnNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CountryId", DbType="NChar(2) NOT NULL", CanBeNull=false, UpdateCheck=UpdateCheck.Never)]
+		public string CountryId
+		{
+			get
+			{
+				return this._CountryId;
+			}
+			set
+			{
+				if ((this._CountryId != value))
+				{
+					if (this._Country.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnCountryIdChanging(value);
+					this.SendPropertyChanging();
+					this._CountryId = value;
+					this.SendPropertyChanged("CountryId");
+					this.OnCountryIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Version", AutoSync=AutoSync.Always, DbType="rowversion NOT NULL", CanBeNull=false, IsDbGenerated=true, IsVersion=true, UpdateCheck=UpdateCheck.Never)]
+		public System.Data.Linq.Binary Version
+		{
+			get
+			{
+				return this._Version;
+			}
+			set
+			{
+				if ((this._Version != value))
+				{
+					this.OnVersionChanging(value);
+					this.SendPropertyChanging();
+					this._Version = value;
+					this.SendPropertyChanged("Version");
+					this.OnVersionChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedAt", DbType="DateTimeOffset", UpdateCheck=UpdateCheck.Never)]
+		public System.Nullable<System.DateTimeOffset> CreatedAt
+		{
+			get
+			{
+				return this._CreatedAt;
+			}
+			set
+			{
+				if ((this._CreatedAt != value))
+				{
+					this.OnCreatedAtChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedAt = value;
+					this.SendPropertyChanged("CreatedAt");
+					this.OnCreatedAtChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UpdatedAt", DbType="DateTimeOffset", UpdateCheck=UpdateCheck.Never)]
+		public System.Nullable<System.DateTimeOffset> UpdatedAt
+		{
+			get
+			{
+				return this._UpdatedAt;
+			}
+			set
+			{
+				if ((this._UpdatedAt != value))
+				{
+					this.OnUpdatedAtChanging(value);
+					this.SendPropertyChanging();
+					this._UpdatedAt = value;
+					this.SendPropertyChanged("UpdatedAt");
+					this.OnUpdatedAtChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Deleted", DbType="Bit NOT NULL", UpdateCheck=UpdateCheck.Never)]
+		public bool Deleted
+		{
+			get
+			{
+				return this._Deleted;
+			}
+			set
+			{
+				if ((this._Deleted != value))
+				{
+					this.OnDeletedChanging(value);
+					this.SendPropertyChanging();
+					this._Deleted = value;
+					this.SendPropertyChanged("Deleted");
+					this.OnDeletedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_UserIdentity", Storage="_UserIdentities", ThisKey="UserId", OtherKey="UserId")]
+		public EntitySet<UserIdentity> UserIdentities
+		{
+			get
+			{
+				return this._UserIdentities;
+			}
+			set
+			{
+				this._UserIdentities.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Country_User", Storage="_Country", ThisKey="CountryId", OtherKey="Id", IsForeignKey=true)]
+		public Country Country
+		{
+			get
+			{
+				return this._Country.Entity;
+			}
+			set
+			{
+				Country previousValue = this._Country.Entity;
+				if (((previousValue != value) 
+							|| (this._Country.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Country.Entity = null;
+						previousValue.Users.Remove(this);
+					}
+					this._Country.Entity = value;
+					if ((value != null))
+					{
+						value.Users.Add(this);
+						this._CountryId = value.Id;
+					}
+					else
+					{
+						this._CountryId = default(string);
+					}
+					this.SendPropertyChanged("Country");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_UserIdentities(UserIdentity entity)
+		{
+			this.SendPropertyChanging();
+			entity.User = this;
+		}
+		
+		private void detach_UserIdentities(UserIdentity entity)
+		{
+			this.SendPropertyChanging();
+			entity.User = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.UserIdentities")]
+	public partial class UserIdentity : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private long _UserId;
+		
+		private int _IdentityTypeId;
+		
+		private string _Identity;
+		
+		private EntityRef<User> _User;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnUserIdChanging(long value);
+    partial void OnUserIdChanged();
+    partial void OnIdentityTypeIdChanging(int value);
+    partial void OnIdentityTypeIdChanged();
+    partial void OnIdentityChanging(string value);
+    partial void OnIdentityChanged();
+    #endregion
+		
+		public UserIdentity()
+		{
+			this._User = default(EntityRef<User>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UserId", DbType="BigInt NOT NULL", IsPrimaryKey=true)]
+		public long UserId
+		{
+			get
+			{
+				return this._UserId;
+			}
+			set
+			{
+				if ((this._UserId != value))
+				{
+					if (this._User.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnUserIdChanging(value);
+					this.SendPropertyChanging();
+					this._UserId = value;
+					this.SendPropertyChanged("UserId");
+					this.OnUserIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IdentityTypeId", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int IdentityTypeId
+		{
+			get
+			{
+				return this._IdentityTypeId;
+			}
+			set
+			{
+				if ((this._IdentityTypeId != value))
+				{
+					this.OnIdentityTypeIdChanging(value);
+					this.SendPropertyChanging();
+					this._IdentityTypeId = value;
+					this.SendPropertyChanged("IdentityTypeId");
+					this.OnIdentityTypeIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="[Identity]", Storage="_Identity", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string Identity
+		{
+			get
+			{
+				return this._Identity;
+			}
+			set
+			{
+				if ((this._Identity != value))
+				{
+					this.OnIdentityChanging(value);
+					this.SendPropertyChanging();
+					this._Identity = value;
+					this.SendPropertyChanged("Identity");
+					this.OnIdentityChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_UserIdentity", Storage="_User", ThisKey="UserId", OtherKey="UserId", IsForeignKey=true)]
+		public User User
+		{
+			get
+			{
+				return this._User.Entity;
+			}
+			set
+			{
+				User previousValue = this._User.Entity;
+				if (((previousValue != value) 
+							|| (this._User.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._User.Entity = null;
+						previousValue.UserIdentities.Remove(this);
+					}
+					this._User.Entity = value;
+					if ((value != null))
+					{
+						value.UserIdentities.Add(this);
+						this._UserId = value.UserId;
+					}
+					else
+					{
+						this._UserId = default(long);
+					}
+					this.SendPropertyChanged("User");
 				}
 			}
 		}
@@ -1046,6 +1613,308 @@ namespace SUMU_Messenger.DataAccess
 				if ((this._Identity != value))
 				{
 					this._Identity = value;
+				}
+			}
+		}
+	}
+	
+	public partial class NotificationDeliveredResult
+	{
+		
+		private System.Nullable<long> _UserId;
+		
+		private string _User_Id;
+		
+		private string _Content;
+		
+		private string _UpdateId;
+		
+		public NotificationDeliveredResult()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UserId", DbType="BigInt")]
+		public System.Nullable<long> UserId
+		{
+			get
+			{
+				return this._UserId;
+			}
+			set
+			{
+				if ((this._UserId != value))
+				{
+					this._UserId = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_User_Id", DbType="NVarChar(128)")]
+		public string User_Id
+		{
+			get
+			{
+				return this._User_Id;
+			}
+			set
+			{
+				if ((this._User_Id != value))
+				{
+					this._User_Id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Content", DbType="NVarChar(MAX)")]
+		public string Content
+		{
+			get
+			{
+				return this._Content;
+			}
+			set
+			{
+				if ((this._Content != value))
+				{
+					this._Content = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UpdateId", DbType="NVarChar(128)")]
+		public string UpdateId
+		{
+			get
+			{
+				return this._UpdateId;
+			}
+			set
+			{
+				if ((this._UpdateId != value))
+				{
+					this._UpdateId = value;
+				}
+			}
+		}
+	}
+	
+	public partial class NotificationReadResult
+	{
+		
+		private long _UserId;
+		
+		private string _User_Id;
+		
+		private string _UpdateId;
+		
+		private string _Content;
+		
+		public NotificationReadResult()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UserId", DbType="BigInt NOT NULL")]
+		public long UserId
+		{
+			get
+			{
+				return this._UserId;
+			}
+			set
+			{
+				if ((this._UserId != value))
+				{
+					this._UserId = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_User_Id", DbType="NVarChar(128) NOT NULL", CanBeNull=false)]
+		public string User_Id
+		{
+			get
+			{
+				return this._User_Id;
+			}
+			set
+			{
+				if ((this._User_Id != value))
+				{
+					this._User_Id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UpdateId", DbType="NVarChar(128)")]
+		public string UpdateId
+		{
+			get
+			{
+				return this._UpdateId;
+			}
+			set
+			{
+				if ((this._UpdateId != value))
+				{
+					this._UpdateId = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Content", DbType="NVarChar(MAX)")]
+		public string Content
+		{
+			get
+			{
+				return this._Content;
+			}
+			set
+			{
+				if ((this._Content != value))
+				{
+					this._Content = value;
+				}
+			}
+		}
+	}
+	
+	public partial class NotificationRecalledResult
+	{
+		
+		private long _UserId;
+		
+		private string _User_Id;
+		
+		private string _UpdateId;
+		
+		public NotificationRecalledResult()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UserId", DbType="BigInt NOT NULL")]
+		public long UserId
+		{
+			get
+			{
+				return this._UserId;
+			}
+			set
+			{
+				if ((this._UserId != value))
+				{
+					this._UserId = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_User_Id", DbType="NVarChar(128) NOT NULL", CanBeNull=false)]
+		public string User_Id
+		{
+			get
+			{
+				return this._User_Id;
+			}
+			set
+			{
+				if ((this._User_Id != value))
+				{
+					this._User_Id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UpdateId", DbType="NVarChar(128)")]
+		public string UpdateId
+		{
+			get
+			{
+				return this._UpdateId;
+			}
+			set
+			{
+				if ((this._UpdateId != value))
+				{
+					this._UpdateId = value;
+				}
+			}
+		}
+	}
+	
+	public partial class GenericNotificationResult
+	{
+		
+		private string _Id;
+		
+		private string _Group_Id;
+		
+		private string _GroupSubject;
+		
+		private string _Recipients;
+		
+		public GenericNotificationResult()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="NVarChar(128)")]
+		public string Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this._Id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Group_Id", DbType="NVarChar(128)")]
+		public string Group_Id
+		{
+			get
+			{
+				return this._Group_Id;
+			}
+			set
+			{
+				if ((this._Group_Id != value))
+				{
+					this._Group_Id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_GroupSubject", DbType="NVarChar(25)")]
+		public string GroupSubject
+		{
+			get
+			{
+				return this._GroupSubject;
+			}
+			set
+			{
+				if ((this._GroupSubject != value))
+				{
+					this._GroupSubject = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Recipients", DbType="NVarChar(MAX)")]
+		public string Recipients
+		{
+			get
+			{
+				return this._Recipients;
+			}
+			set
+			{
+				if ((this._Recipients != value))
+				{
+					this._Recipients = value;
 				}
 			}
 		}

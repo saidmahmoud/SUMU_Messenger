@@ -82,10 +82,11 @@ namespace SUMU_Messenger.WebApi.Controllers
             return Ok(user);
         }
         [Authorize]
-        public async Task<IHttpActionResult> Get(int offset=0, int limit=100)
+        public async Task<IHttpActionResult> Get(int offset, int limit)
         {
+            
             var error = string.Empty;
-            LogManager.WriteLog("info", "", this.Request.RequestUri.PathAndQuery, JsonConvert.SerializeObject(_SessionInfo)).Forget();
+            LogManager.WriteLog("info", _User.Username, this.Request.RequestUri.PathAndQuery, JsonConvert.SerializeObject(_SessionInfo)).Forget();
             var users = DataClassesManager.GetUsers(_User.Id, offset, limit, out error);
 
             if (!string.IsNullOrEmpty(error))

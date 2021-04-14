@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
-namespace Spark.MessengerModels
+namespace SUMU_Messenger.Models
 {
     public class NotificationDTO
     {

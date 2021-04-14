@@ -1,4 +1,5 @@
-﻿using Microsoft.Owin;
+﻿using Microsoft.AspNet.SignalR;
+using Microsoft.Owin;
 using Microsoft.Owin.Security.OAuth;
 using Owin;
 using SUMU_Messenger.WebApi.Helper;
@@ -14,8 +15,15 @@ namespace SUMU_Messenger.WebApi
         public void Configuration(IAppBuilder app)
         {
             ConfigureOAuth(app);
-            app.MapSignalR();
-            
+            //app.MapSignalR();
+            var hubConfig = new HubConfiguration();
+            hubConfig.EnableDetailedErrors = true;
+            GlobalHost.Configuration.ConnectionTimeout = TimeSpan.FromSeconds(60);
+            GlobalHost.Configuration.DisconnectTimeout = TimeSpan.FromSeconds(180);
+            GlobalHost.Configuration.KeepAlive = TimeSpan.FromSeconds(60);
+            GlobalHost.HubPipeline.AddModule(new ErrorHandlingPipelineModule());
+            GlobalHost.TraceManager.Switch.Level = System.Diagnostics.SourceLevels.All;
+            app.MapSignalR(hubConfig);
         }
         public void ConfigureOAuth(IAppBuilder app)
         {

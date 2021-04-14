@@ -7,6 +7,30 @@
       <Column Name="Name" Type="System.String" DbType="NVarChar(40) NOT NULL" CanBeNull="false" />
       <Column Name="BanSMSInvitation" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
       <Column Name="PhoneRegExp" Type="System.String" DbType="NVarChar(300)" CanBeNull="true" />
+      <Association Name="Country_User" Member="Users" ThisKey="Id" OtherKey="CountryId" Type="User" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Users" Member="Users">
+    <Type Name="User">
+      <Column Name="Id" Type="System.String" DbType="NVarChar(128) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="UserId" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Username" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="CountryId" Type="System.String" DbType="NChar(2) NOT NULL" CanBeNull="false" />
+      <Column Name="Version" Type="System.Data.Linq.Binary" DbType="rowversion NOT NULL" CanBeNull="false" IsVersion="true" />
+      <Column Name="CreatedAt" Type="System.DateTimeOffset" DbType="DateTimeOffset" CanBeNull="true" />
+      <Column Name="UpdatedAt" Type="System.DateTimeOffset" DbType="DateTimeOffset" CanBeNull="true" />
+      <Column Name="Deleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="User_UserIdentity" Member="UserIdentities" ThisKey="UserId" OtherKey="UserId" Type="UserIdentity" />
+      <Association Name="Country_User" Member="Country" ThisKey="CountryId" OtherKey="Id" Type="Country" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.UserIdentities" Member="UserIdentities">
+    <Type Name="UserIdentity">
+      <Column Name="UserId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="IdentityTypeId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="[Identity]" Member="Identity" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Association Name="User_UserIdentity" Member="User" ThisKey="UserId" OtherKey="UserId" Type="User" IsForeignKey="true" />
     </Type>
   </Table>
   <Function Name="dbo.DoRegistration" Method="DoRegistration">
@@ -109,6 +133,76 @@
       <Column Name="CreatedAt" Type="System.DateTimeOffset" DbType="DateTimeOffset" CanBeNull="true" />
       <Column Name="IdentityTypeId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="[Identity]" Member="Identity" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.SaveNotification" Method="SaveNotification">
+    <Parameter Name="SenderId" Parameter="senderId" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="recipientPublicId" Type="System.String" DbType="NVarChar(128)" />
+    <Parameter Name="RecipientInternalId" Parameter="recipientInternalId" Type="System.Int64" DbType="BigInt" Direction="InOut" />
+    <Parameter Name="LocalMessageId" Parameter="localMessageId" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="NotificationTypeId" Parameter="notificationTypeId" Type="System.Int32" DbType="Int" />
+    <Parameter Name="NotificationContent" Parameter="notificationContent" Type="System.String" DbType="NVarChar(2048)" />
+    <Parameter Name="ExpiresAt" Parameter="expiresAt" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="FileSizeInBytes" Parameter="fileSizeInBytes" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="Duration" Parameter="duration" Type="System.Int32" DbType="Int" />
+    <Parameter Name="IsScrambled" Parameter="isScrambled" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="delay" Type="System.Int32" DbType="Int" />
+    <Parameter Name="AlreadyReceived" Parameter="alreadyReceived" Type="System.Boolean" DbType="Bit" Direction="InOut" />
+    <Parameter Name="NotificationId" Parameter="notificationId" Type="System.String" DbType="NVarChar(128)" Direction="InOut" />
+    <Parameter Name="IssuedAt" Parameter="issuedAt" Type="System.DateTimeOffset" DbType="DateTimeOffset" Direction="InOut" />
+    <Parameter Name="SenderHasPendingNotifications" Parameter="senderHasPendingNotifications" Type="System.Boolean" DbType="Bit" Direction="InOut" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.NotificationDelivered" Method="NotificationDelivered">
+    <Parameter Name="userId" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="notifications" Type="System.String" DbType="NVarChar(MAX)" />
+    <ElementType Name="NotificationDeliveredResult">
+      <Column Name="UserId" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="User_Id" Type="System.String" DbType="NVarChar(128)" CanBeNull="true" />
+      <Column Name="Content" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="UpdateId" Type="System.String" DbType="NVarChar(128)" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.NotificationRead" Method="NotificationRead">
+    <Parameter Name="userId" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="Id" Parameter="id" Type="System.String" DbType="NVarChar(128)" />
+    <Parameter Name="markAllPrevious" Type="System.Boolean" DbType="Bit" />
+    <ElementType Name="NotificationReadResult">
+      <Column Name="UserId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="User_Id" Type="System.String" DbType="NVarChar(128) NOT NULL" CanBeNull="false" />
+      <Column Name="UpdateId" Type="System.String" DbType="NVarChar(128)" CanBeNull="true" />
+      <Column Name="Content" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.NotificationRecalled" Method="NotificationRecalled">
+    <Parameter Name="userId" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="Ids" Parameter="ids" Type="System.String" DbType="NVarChar(MAX)" />
+    <ElementType Name="NotificationRecalledResult">
+      <Column Name="UserId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="User_Id" Type="System.String" DbType="NVarChar(128) NOT NULL" CanBeNull="false" />
+      <Column Name="UpdateId" Type="System.String" DbType="NVarChar(128)" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.GenericNotification" Method="GenericNotification">
+    <Parameter Name="delay" Type="System.Int32" DbType="Int" />
+    <Parameter Name="SenderId" Parameter="senderId" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="recipient_users" Type="System.String" DbType="NVarChar(MAX)" />
+    <Parameter Name="recipient_groups" Type="System.String" DbType="NVarChar(MAX)" />
+    <Parameter Name="LocalMessageId" Parameter="localMessageId" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="NotificationTypeId" Parameter="notificationTypeId" Type="System.Int32" DbType="Int" />
+    <Parameter Name="NotificationContent" Parameter="notificationContent" Type="System.String" DbType="NVarChar(2048)" />
+    <Parameter Name="ExpiresAt" Parameter="expiresAt" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="FileSizeInBytes" Parameter="fileSizeInBytes" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="Duration" Parameter="duration" Type="System.Int32" DbType="Int" />
+    <Parameter Name="IsScrambled" Parameter="isScrambled" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="IssuedAt" Parameter="issuedAt" Type="System.DateTimeOffset" DbType="DateTimeOffset" Direction="InOut" />
+    <Parameter Name="AlreadyReceived" Parameter="alreadyReceived" Type="System.Boolean" DbType="Bit" Direction="InOut" />
+    <Parameter Name="SenderHasPendingNotifications" Parameter="senderHasPendingNotifications" Type="System.Boolean" DbType="Bit" Direction="InOut" />
+    <ElementType Name="GenericNotificationResult">
+      <Column Name="Id" Type="System.String" DbType="NVarChar(128)" CanBeNull="true" />
+      <Column Name="Group_Id" Type="System.String" DbType="NVarChar(128)" CanBeNull="true" />
+      <Column Name="GroupSubject" Type="System.String" DbType="NVarChar(25)" CanBeNull="true" />
+      <Column Name="Recipients" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
     </ElementType>
   </Function>
 </Database>

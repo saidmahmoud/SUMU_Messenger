@@ -20,7 +20,7 @@ namespace SUMU_Messenger.WebApi
                     if (claim.Type == ClaimTypes.NameIdentifier)
                     {
                         var identity = claim.Value.Split(':');
-                        return new UserDTO { Id = identity[0], Username = identity[1] };
+                        return new UserDTO { Id = identity[0], Username = identity[1], UserId = long.Parse(identity[2] )};
                     }
                 }
             }
