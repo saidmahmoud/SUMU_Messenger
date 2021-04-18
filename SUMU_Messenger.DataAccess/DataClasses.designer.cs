@@ -206,6 +206,12 @@ namespace SUMU_Messenger.DataAccess
 			senderHasPendingNotifications = ((System.Nullable<bool>)(result.GetParameterValue(13)));
 			return ((ISingleResult<GenericNotificationResult>)(result.ReturnValue));
 		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.SynchronizeContacts")]
+		public void SynchronizeContacts([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> userId, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(25)")] string dataType, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(MAX)")] string script, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="DateTimeOffset")] System.Nullable<System.DateTimeOffset> synchStartedAt)
+		{
+			this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), userId, dataType, script, synchStartedAt);
+		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Country")]

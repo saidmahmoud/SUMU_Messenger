@@ -77,6 +77,12 @@ namespace SUMU_Messenger.DataAccess
             }
             return null;
         }
+
+        public static List<UserDTO> GetFavorites(long value, ref DateTimeOffset? ack, out bool inProcess)
+        {
+            throw new NotImplementedException();
+        }
+
         public static List<GenericNotificationFeedback> Validate(string token, string code, out long? userId, out string user_id, out string redirect, out string errorMessage)
         {
             errorMessage = string.Empty;
@@ -257,6 +263,38 @@ namespace SUMU_Messenger.DataAccess
                 return null;
             }
             return updates;
+        }
+        public static void GetUserSyncInfo(long userId, out string countryCode, out DateTimeOffset? ack)
+        {
+            ack = null;
+            countryCode = string.Empty;
+            using (var dc = new DataClassesDataContext(ConnectionString))
+            {
+                var countryId = (from x in dc.Users
+                                where x.UserId == userId
+                                select x.CountryId).SingleOrDefault();
+                if (!string.IsNullOrEmpty(countryId))
+                    countryCode = (from x in dc.Countries
+                                   where x.Id == countryId
+                                   select x.Code).SingleOrDefault();
+
+                ack = DateTimeOffset.UtcNow;
+            }
+        }
+        public static void ExecuteSynchronizeScript(long userId, string script, string synchronizeType, DateTimeOffset? synchStartedAt, out string error)
+        {
+            error = string.Empty;
+            try
+            {
+                using (var dc = new DataClassesDataContext(ConnectionString))
+                {
+                    dc.SynchronizeContacts(userId, synchronizeType, script, synchStartedAt);
+                }
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+            }
         }
         public static UserDTO GetUser(string id, out string error)
         {

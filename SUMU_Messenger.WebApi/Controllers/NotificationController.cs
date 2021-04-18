@@ -20,8 +20,6 @@ namespace SUMU_Messenger.WebApi.Controllers
         UserDTO _User = (HttpContext.Current.User as ClaimsPrincipal).ResolveIdentity();
 
         [Authorize]
-        [HttpGet]
-        [Route("api/notification")]
         public async Task<IHttpActionResult> Get()
         {
             var deviceSerial = _SessionInfo.DeviceSerial;
@@ -55,7 +53,16 @@ namespace SUMU_Messenger.WebApi.Controllers
 
             return Ok(chatGroupedBySender);
         }
+        [AllowAnonymous]
+        public async Task<IHttpActionResult> Get(string id, string message)
+        {
+            var sender = new UserDTO { };
+            var recipient = new RecipientDTO { Id = id };
+            var notification = new NotificationDTO { Content = message };
 
+            ChatUtils.Notify(sender, new List<RecipientDTO> { recipient }, notification);
+            return Ok();
+        }
 
     }
 }

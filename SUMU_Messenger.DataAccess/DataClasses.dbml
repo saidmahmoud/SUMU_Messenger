@@ -205,4 +205,10 @@
       <Column Name="Recipients" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
     </ElementType>
   </Function>
+  <Function Name="dbo.SynchronizeContacts" Method="SynchronizeContacts">
+    <Parameter Name="userId" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="dataType" Type="System.String" DbType="NVarChar(25)" />
+    <Parameter Name="script" Type="System.String" DbType="NVarChar(MAX)" />
+    <Parameter Name="synchStartedAt" Type="System.DateTimeOffset" DbType="DateTimeOffset" />
+  </Function>
 </Database>

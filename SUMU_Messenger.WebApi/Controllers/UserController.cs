@@ -66,7 +66,7 @@ namespace SUMU_Messenger.WebApi.Controllers
         );
         }
 
-        [Authorize]
+        //[Authorize]
         public async Task<IHttpActionResult> Get(string id)
         {
             var error = string.Empty;
@@ -81,8 +81,8 @@ namespace SUMU_Messenger.WebApi.Controllers
 
             return Ok(user);
         }
-        [Authorize]
-        public async Task<IHttpActionResult> Get(int offset, int limit)
+        //[Authorize]
+        public async Task<IHttpActionResult> Get(int offset=0, int limit=100)
         {
             
             var error = string.Empty;
